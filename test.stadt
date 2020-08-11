@@ -1,0 +1,17 @@
+var = 11 + 2; 
+stampLn var;
+second = captureStr "What is your name?? ";
+stampLn "Your name is: " + str(second); &You can still do this:&
+
+completeIf second == "Magnus Carlsen" {
+  stampLn "I never knew the world chess champion knew how to code...";
+}
+completeElseIf second == "Aguy11" {
+  stampLn "I don't think so.";
+
+}
+completeElse {
+  stampLn "Welcome to Code Club";
+}
+
+
