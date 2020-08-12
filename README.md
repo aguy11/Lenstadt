@@ -113,3 +113,36 @@ completeWhile True {
 }
 ```
 
+### For Loops
+
+> Note: Currently, for loops can only loop numbers as in a statement like `for x in range(0, 10)` in Python, and not through arrays, since arrays have not been added yet(They're next on my list!)
+
+Structure: `loop <variable name> from <beginning value> to <ending value> { &Things to do& }`
+
+Example:
+```
+completeWhile True {
+  times = captureInt 'How many times to loop?';
+  completeIf times > 1000 {
+    stampLn "I'm afraid that'll crash your computer";
+  }
+  completeElseIf times < 1 {
+    stampLn "You need to have at least one time!!!";
+  }
+  completeElse {
+    quitLoop;
+  }
+}
+increment = "."
+number = 1
+loop time from 1 to times + 1 {
+  stampLn "Looping{increments * number} Loop time: {time}";
+  completeIf number == 3 {
+    number = 0;
+  }
+  number += 1;
+}
+
+
+```
+
