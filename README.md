@@ -71,3 +71,45 @@ Structure: `completeIf <case> { &Things to do& }`
 Elif Structure: Just use `completeElseIf` instead of `completeIf`
 
 Else Structure: Use `completeElse` instead of `completeIf`
+
+Example:
+```
+name = captureStr "What is your name?";
+completeIf name == "Magnus Carlsen" {
+  stampLn "Wow, at least someone visists this.";
+}
+completeElseIf name == "Billy Bob Joe" {
+  stampLn "Don't lie, the force tells me it is not.";
+}
+completeElse {
+  stampLn "Welcome!";
+}
+```
+
+### While Loops
+
+A new feature, looks somewhat like this:
+
+Structure: `completeWhile <case> { &Things to do& } `
+
+You can use `quitLoop` to break the loop and `advance` to continue it.
+
+Example:
+```
+counter = 0;
+completeWhile True {
+
+  stampLn "Spammin' I am";
+  completeIf counter == 16 {
+    quitLoop;
+  }
+  completeElseIf counter > 16 {
+    stampLn "Systematic Error.....";
+  }
+  completeElse {
+    advance;
+    counter += 1;
+  }
+}
+```
+
