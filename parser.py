@@ -3,7 +3,7 @@ from objects.printObject import PrintObject
 from objects.ifObject import IfObject
 from objects.elseObject import ElseObject
 from objects.elseIfObject import ElseIfObject
-
+from objects.whileObject import WhileObject
 
 class Parser(object):
   def __init__(self, tokens):
@@ -33,6 +33,26 @@ class Parser(object):
       elif token_type == "CASE" and token_value == "}":
         self.indents -= 1
         self.token_index += 1
+      elif token_type == "IDENTIFIER" and token_value == "completeWhile":
+        self.parse_while_loop(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "quitLoop":
+        if self.tokens[self.token_index + 1][1] == ";":
+          exec_code = "break"
+          for i in range(self.indents):
+            exec_code = "\t" + exec_code
+          self.transpiled_code = self.transpiled_code + f"{exec_code}\n"
+          self.token_index += 2
+        else:
+          raise ValueError("';' expected after quitLoop statement")
+      elif token_type == "IDENTIFIER" and token_value == "advance":
+        if self.tokens[self.token_index + 1][1] == ";":
+          exec_code = "pass"
+          for i in range(self.indents):
+            exec_code = "\t" + exec_code
+          self.transpiled_code = self.transpiled_code + f"{exec_code}\n"
+          self.token_index += 2
+        else:
+          raise ValueError("';' expected after advance statement")
       else:
         raise SyntaxError("ERR: Undefined Item: " + token_value)
 
@@ -153,9 +173,24 @@ class Parser(object):
     self.transpiled_code = self.transpiled_code + ElseIfObj.transpile(case, self.indents)
     self.token_index += tokens_checked + 1
     self.indents += 1
-
-    
-    
-
-
-      
+  def parse_while_loop(self, tkns):
+    tokens_checked = 0
+    case = ''
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]
+      token_value = tkns[tokens_checked][1]
+      if token_type == "CASE" and token_value == "{":
+        break
+      elif token == 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+        case = case + token_value
+      elif token == 1 and token_value not in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+        raise ValueError("Invalid CompleteWhile Particle: " + token_value)
+      elif token >= 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
+        case = case + " " + token_value
+      elif token >= 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
+        raise ValueError("Invalid CompleteWhile  Particle: " + token_value)
+      tokens_checked += 1
+    WhileObj = WhileObject()
+    self.transpiled_code = self.transpiled_code + WhileObj.transpile(case, self.indents)
+    self.token_index += tokens_checked + 1
+    self.indents += 1
