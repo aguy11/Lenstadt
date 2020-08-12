@@ -14,4 +14,19 @@ completeElse {
   stampLn "Welcome to Code Club";
 }
 
+completeWhile True {
+  answer = captureStr "What is 8 * 8?";
+  completeIf answer == "64" {
+    stampLn "You are partially correct...";
+    quitLoop;
+  }
+  completeElseIf "brain" in answer {
+    stampLn "You know so much!";
+    quitLoop;
+  }
+  completeElse {
+    stampLn "Incorrect!!!";
+    advance; & Not necessary &
+  }
+}
 
