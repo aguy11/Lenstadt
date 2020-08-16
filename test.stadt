@@ -1,32 +1,56 @@
-var = 11 + 2; 
-stampLn var;
-second = captureStr "What is your name?? ";
-stampLn "Your name is: " + str(second); &You can still do this:&
-
-completeIf second == "Magnus Carlsen" {
-  stampLn "I never knew the world chess champion knew how to code...";
+defFunc add ( x , y ) {
+  answer = x + y;
+  stampLn "The answer is: ";
+  stampLn answer;
 }
-completeElseIf second == "Aguy11" {
-  stampLn "I don't think so.";
-
+defFunc subtract ( x , y ) {
+  answer = x - y;
+  stampLn "The answer is: ";
+  stampLn answer;
 }
-completeElse {
-  stampLn "Welcome to Code Club";
+defFunc multiply ( x , y ) {
+  answer = x * y;
+  stampLn "The answer is: ";
+  stampLn answer;
+}
+defFunc divide ( x , y ) {
+  answer = x / y;
+  stampLn "The answer is: ";
+  stampLn answer;
 }
 
+& Main Code &
 completeWhile True {
-  answer = captureStr "What is 8 * 8?";
-  completeIf answer == "64" {
-    stampLn "You are partially correct...";
-    quitLoop;
+  completeWhile True {
+    choice = captureStr "Select an option:\n a) Add\n b) Subtract\n c) Multiply\n d) Divide\n\n\nType q to quit.";
+    completeIf choice == "a" or decision == "b" or decision == "c" or decision == "d" {
+      quitLoop;
+    }
+    completeElse {
+      stampLn "Invalid Choice " + choice;
+    }
   }
-  completeElseIf "brain" in answer {
-    stampLn "You know so much!";
+  completeIf choice == "q" {
     quitLoop;
   }
   completeElse {
-    stampLn "Incorrect!!!";
-    advance; & Not necessary &
+    num1 = captureFloat "First Number: ";
+    num2 = captureFloat "Second Number: ";
+    completeIf choice == "a" {
+      add ( num1 , num2 );
+    }
+    completeElseIf choice == "b" {
+      subtract ( num1 , num2 );
+    }
+    completeElseIf choice == "c" {
+      multiply ( num1 , num2 );
+    }
+    completeElse {
+      divide ( num1 , num2 );
+    }
+
   }
+
 }
 
+stampLn "Thanks for checking out our function based calculator!!!";
