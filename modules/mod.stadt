@@ -1,0 +1,18 @@
+defFunc string ( value ) {
+  give str(value);
+}
+defFunc integer ( value ) {
+  give int(value);
+}
+defFunc float ( value ) {
+  give float(value);
+}
+defFunc bool ( value ) {
+  give bool(value);
+}
+defFunc length ( value ) {
+  give len(value);
+}
+defFunc reverse ( value ) {
+  give value[::-1];
+}
