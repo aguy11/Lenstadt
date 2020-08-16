@@ -175,3 +175,32 @@ function = add(7,8) - subtract(10,7);
 ```
 Yeah, no spaces for you.
 
+### The Built-In Functions
+
+Yesssss... there are even built-ins, which makes it easier to do stuff. They are a module that comes in automatically, so you don't have to import anything.
+
+#### How to use/Guide:
+
+There are only 5 functions that come as built-ins, but here's a small guide to each of them.
+
+List of Functions:
+
+- string()
+- integer()
+- float()
+- bool()
+- reverse()
+
+The names might sound familiar...
+
+STRING()
+Basically converts the given value to a string
+INTEGER()
+Does the same thing as a string, but converts the value into a whole number
+FLOAT()
+Same as integer, but only it returns a floating number
+BOOL()
+This is getting obvious, converts the given value to a Boolean
+REVERSE()
+The most interesting function: Returns a reversed version of a given string!
+
