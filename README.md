@@ -115,7 +115,7 @@ completeWhile True {
 
 ### For Loops
 
-> Note: Currently, for loops can only loop numbers as in a statement like `for x in range(0, 10)` in Python, and not through arrays, since arrays have not been added yet(They're next on my list!)
+> Note: Currently, for loops can only loop numbers as in a statement like `for x in range(0, 10)` in Python, and not through arrays, since arrays have not been added yet
 
 Structure: `loop <variable name> from <beginning value> to <ending value> { &Things to do& }`
 
@@ -145,4 +145,33 @@ loop time from 1 to times + 1 {
 
 
 ```
+
+### Functions
+
+Yes, they're finally here! Functions! There are currently two types, and they're not too flexible, but I'll change that later, I'm focusing on *functionality* not *flexibility*.
+
+Structure: `defFunc <function name> ( param1 , param2 ) {&Things to do& }`
+
+Example:
+```
+defFunc add ( x , y ) {
+  answer = x + y;
+  stampLn "The answer is: ";
+  stampLn answer;
+}
+
+add ( 5 , 5 );
+```
+
+You can also use `give <return value>;` to return a value for a function. And here's the harder part:
+
+#### Inline Functions
+
+What in the world are Inline Functions in this lang? They're when you call a function inside a variable, that's what! They're pretty non-flexible, and I'm trying to remove this difference, but it'll have to do for now.
+
+Example:
+```
+function = add(7,8) - subtract(10,7);
+```
+Yeah, no spaces for you.
 
