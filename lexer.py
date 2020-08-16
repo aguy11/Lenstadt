@@ -25,6 +25,17 @@ class Lexer(object):
         tokens.append(['COMMENT', alls])
       elif word in ['{', '}']:
         tokens.append(["CASE", word])
+      elif word == "(":
+        tokens.append(["CASE", '('])
+      elif word == ",":
+        tokens.append(['SEPERATOR', ","])
+      elif word == ")":
+        tokens.append(["CASE", ")"])
+      elif word == ");":
+        tokens.append(["CASE", ")"])
+        tokens.append(["STATEMENT_END", ";"])
+
+
       elif word in ["captureStr", "captureInt", "captureBool", "captureFloat"]:
         if word == "captureStr":
           strt = "input("
@@ -100,7 +111,7 @@ class Lexer(object):
             if word[-1] == tr or word[-2] == tr:
               #print"DOING IT: " + i)
               if word[-1] == ";":
-                tokens.append(["STRING", word[ : -1]])
+                tokens.append(["STRING", "f" + word[ : -1]])
                 tokens.append(["STATEMENT_END", ";"])
               else:
                 tokens.append(["STRING", "f" + word])
