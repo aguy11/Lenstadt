@@ -1,9 +1,14 @@
+
 from objects.varObject import VarObject
 from objects.printObject import PrintObject
 from objects.ifObject import IfObject
 from objects.elseObject import ElseObject
 from objects.elseIfObject import ElseIfObject
 from objects.whileObject import WhileObject
+from objects.forLoopObject import ForLoopObject
+from objects.functionObject import FunctionObject
+from objects.giveObject import GiveObject
+from objects.functionSingleObject import FunctionSingleObject
 
 class Parser(object):
   def __init__(self, tokens):
@@ -11,6 +16,7 @@ class Parser(object):
     self.token_index = 0
     self.transpiled_code = ""
     self.indents = 0
+    self.funcs = []
   def parse(self):
     while self.token_index < len(self.tokens):
       ##print(self.token_index)
@@ -18,7 +24,7 @@ class Parser(object):
       token_type = self.tokens[self.token_index][0]        
       token_value = self.tokens[self.token_index][1]
       print(token_value + "Is it")
-      if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][0] == "OPERATOR":
+      if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][1] in ["+=", "=", "-="]:
         self.parse_variable_declaration(self.tokens[self.token_index : len(self.tokens)])
       elif token_type == "COMMENT":
         self.token_index += 1
@@ -35,6 +41,8 @@ class Parser(object):
         self.token_index += 1
       elif token_type == "IDENTIFIER" and token_value == "completeWhile":
         self.parse_while_loop(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value in self.funcs:
+        self.parse_function(self.tokens[self.token_index: len(self.tokens)], token_value)
       elif token_type == "IDENTIFIER" and token_value == "quitLoop":
         if self.tokens[self.token_index + 1][1] == ";":
           exec_code = "break"
@@ -53,15 +61,21 @@ class Parser(object):
           self.token_index += 2
         else:
           raise ValueError("';' expected after advance statement")
+      elif token_type == "IDENTIFIER" and token_value == "loop":
+        self.parse_for_loop(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "give":
+        self.parse_give(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "defFunc":
+        self.parse_function_declaration(self.tokens[self.token_index: len(self.tokens)])
       else:
         raise SyntaxError("ERR: Undefined Item: " + token_value)
 
 
     print(self.transpiled_code)
-    #try:    #This stuff is for later, I feel
-    exec(self.transpiled_code)
-    #except: #For errors that Python will call, not exactly sure about these yet
-      #raise 
+    try:    #This stuff is for later, I feel
+      exec(self.transpiled_code)
+    except: #For errors that Python will call, not exactly sure about these yet
+      raise ValueError("CODE ERROR") 
 
 
   def parse_variable_declaration(self, tkns):
@@ -85,11 +99,11 @@ class Parser(object):
       elif token == 2 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING"]:
         value = token_value
       elif token == 2 and token_type not in ['IDENTIFIER','INTEGER', "BOOL", "STRING"]:
-        raise ValueError("ERR: Inavlid Variable Value " + token_value)
+        raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
       elif token >= 3 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR"]:
         value = value + " " + token_value
       elif token >= 3 and token_type not in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR"]:
-        raise ValueError("ERR: Inavlid Variable Value " + token_value)
+        raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
       tokens_checked += 1
     #print(name, operator, value)
     VarObj = VarObject()
@@ -125,9 +139,9 @@ class Parser(object):
       token_value = tkns[tokens_checked][1]
       if token_type == "CASE" and token_value == "{":
         break
-      elif token == 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+      elif token == 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
         case = case + token_value
-      elif token == 1 and token_value not in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+      elif token == 1 and token_value not in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
         raise ValueError("Invalid CompleteIf Statement Particle: " + token_value)
       elif token >= 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
         case = case + " " + token_value
@@ -194,3 +208,172 @@ class Parser(object):
     self.transpiled_code = self.transpiled_code + WhileObj.transpile(case, self.indents)
     self.token_index += tokens_checked + 1
     self.indents += 1
+
+  def parse_for_loop(self, tkns):
+    tokens_checked = 0
+    temp_var = ""
+    to = ''
+    fro = ''
+    place_holder = 0
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]
+      token_value = tkns[tokens_checked][1]
+      print(token == place_holder and token_type in ['IDENTIFIER', 'INTEGER'])
+      if token == 0:
+        pass
+      elif token_type == "CASE" and token_value == "{":
+        break
+      elif token == 1 and token_type == "IDENTIFIER":
+        temp_var = token_value
+      elif token == 1 and token_type != "IDENTIFIER":
+        raise ValueError("Invalid Temporary Loop Variable: " + token_value)
+      elif token == 2 and token_value == "from":
+        pass
+      elif token == 2 and token_value != "from":
+        raise ValueError("'from' expected.")
+      elif token == 3 and token_type in ['IDENTIFIER', 'INTEGER']:
+        fro = fro + token_value
+      elif token == 3 and token_type not in ['IDENTIFIER', 'INTEGER']:
+        raise ValueError("Invalid to Value in Loop")
+      elif token > 3 and token < place_holder and place_holder != 0 and token_type in ['IDENTIFIER', 'INTEGER', 'OPERATOR'] and token_value != "to":
+        fro = fro + " " + token_value
+      elif token > 3 and token_value == "to":
+        place_holder = token + 1
+        print("Hahahaha " + str(place_holder))
+      elif token > 3 and token_type not in ['INTEGER', 'IDENTIFIER', 'OPERATOR']:
+        raise ValueError('Invalid From Value in Loop')
+      elif token == place_holder and token_type in ['IDENTIFIER', 'INTEGER']:
+        print("Bob")
+        to = to + token_value
+      elif token == place_holder and token_type not in ['IDENTIFIER', 'INTEGER']:
+        raise ValueError("Invalid to Value in Loop")
+      elif token > place_holder and token_type in ['IDENTIFIER', 'INTEGER', 'OPERATOR']:
+        to = to + " " + token_value
+      elif token > place_holder and token_type not in ['INTEGER', 'IDENTIFIER', 'OPERATOR']:
+        raise ValueError('Invalid To Value in Loop')
+      tokens_checked += 1
+    print("Hey you ",  fro, to)
+    ForLoopObj = ForLoopObject()
+    self.transpiled_code = self.transpiled_code + ForLoopObj.transpile(temp_var, fro, to, self.indents)
+    self.token_index += tokens_checked + 1
+    self.indents += 1
+  
+  def parse_function_declaration(self, tkns):
+    tokens_checked = 0
+    name = ''
+    params = []
+    place = 0
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]
+      token_value = tkns[tokens_checked][1]
+      if token_type == "CASE" and token_value == "{":
+        break
+      elif token == 1 and token_type == "IDENTIFIER":
+        name = token_value
+      elif token == 1 and token_type != "IDENTIFIER":
+        raise ValueError("Invalid Function Name")
+      elif token == 2 and token_type == "CASE" and token_value == "(":
+        pass
+      elif token == 2 and token_value != "CASE":
+        raise ValueError("'(' expected.")
+      elif token == 2 and token_value != "(":
+        raise ValueError("'(' expected.")
+      elif token > 3 and token_value == ")":
+        if tkns[tokens_checked + 1][1] == "{":
+          tokens_checked += 1
+          break
+        else:
+          raise ValueError("'{' expected after function declaration")
+      elif token == 3 and token_type == "IDENTIFIER":
+        params.append(token_value)
+        place = token + 1
+      elif token == 3 and token_type != "IDENTIFIER":
+        raise ValueError("Invalid Parameter Name")
+      elif token == place and place != 0 and token_type == "SEPERATOR":
+        pass
+      elif token == place and place != 0 and token_type != "SEPERATOR":
+        raise ValueError("',' expected")
+      elif token == place + 1 and token_type == "IDENTIFIER":
+        params.append(token_value)
+        place = token + 1
+      elif token == place + 1 and token_type != "IDENTIFIER":
+        raise ValueError("Invalid Parameter Name") 
+      tokens_checked += 1
+    FunctionObj = FunctionObject()
+    self.transpiled_code = self.transpiled_code + FunctionObj.transpile(name, params, self.indents)
+    self.token_index += tokens_checked + 1
+    self.indents += 1
+    self.funcs.append(name)
+  def parse_give(self, tkns):
+    tokens_checked = 0
+    value = ''
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]
+      token_value = tkns[tokens_checked][1]
+      if token_type == "STATEMENT_END":
+        break
+      elif token == 1 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+        value = token_value
+      elif token == 1 and token_type not in ["IDENTIFIER", "STRING", "INTEGER", "BOOL"]:
+        raise ValueError("Invalid Give Value " + token_value)
+      elif token >= 2 and token_type in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
+        value = value + " " + token_value
+      elif token >= 2 and token_type not in ["IDENTIFIER", "STRING", "INTEGER", "BOOL", "OPERATOR"]:
+        raise ValueError("Invalid Give Value " + token_value)
+      tokens_checked += 1
+    GiveObj = GiveObject()
+    self.transpiled_code = self.transpiled_code + GiveObj.transpile(value, self.indents)
+    self.token_index += tokens_checked + 1
+  def parse_function(self, tkns, nm):
+    tokens_checked = 0
+    name = nm
+    pars = []
+    current_par = ''
+    place = 2
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]  
+      token_value = tkns[tokens_checked][1]  
+      print(token_type)
+      if token == 1 and token_type == "CASE" and token_value == "(":
+        pass
+      elif token == 1 and token_type != "CASE":
+        print("mhuah")
+        raise ValueError("'(' expected")
+      elif token == 1 and token_value != "(":
+        print("mhua")
+        raise ValueError("'(' expected")
+      elif token >= 3 and token_value == ")":
+        if tkns[tokens_checked + 1][0] == "STATEMENT_END":
+          pars.append(current_par)
+          tokens_checked += 1
+          break
+        else:
+          raise ValueError("';' expected")
+
+      elif token == place and token_type in ['IDENTIFIER', 'STRING', 'BOOL', "INTEGER"]:
+        current_par = token_value
+      elif token == place and token_type not in ['IDENTIFIER', 'STRING', 'BOOL', "INTEGER"]:
+        raise ValueError("Invalid Function Parameter Contents: " + token_value)
+      elif token > place and token_type == "SEPERATOR":
+        pars.append(current_par)
+        current_par = ""
+        place = token + 1
+
+      elif token > place and token_type in ['IDENTIFIER', 'STRING', 'BOOL', "INTEGER", "OPERATOR"]:
+        current_par = current_par + " " + token_value
+      elif token > place and token_type not in ['IDENTIFIER', 'STRING', 'BOOL', "INTEGER", "OPERATOR"]:
+        raise ValueError("Invalid Function Parameter Contents: " + token_value)
+      tokens_checked += 1
+    FunctionSingleObj = FunctionSingleObject()
+    self.transpiled_code = self.transpiled_code + FunctionSingleObj.transpile(name, pars, self.indents)
+    self.token_index = self.token_index + tokens_checked + 1
+      
+      
+
+
+
+    
+    
+
+
+      
