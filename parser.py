@@ -1,4 +1,4 @@
-
+import lexer
 from objects.varObject import VarObject
 from objects.printObject import PrintObject
 from objects.ifObject import IfObject
@@ -8,7 +8,9 @@ from objects.whileObject import WhileObject
 from objects.forLoopObject import ForLoopObject
 from objects.functionObject import FunctionObject
 from objects.giveObject import GiveObject
-from objects.functionSingleObject import FunctionSingleObject
+from objects.functionSingleObject import FunctionSingleObject 
+from objects.importObject import ImportObject
+
 
 class Parser(object):
   def __init__(self, tokens):
@@ -18,12 +20,18 @@ class Parser(object):
     self.indents = 0
     self.funcs = []
   def parse(self):
+    with open("modules/mod.stadt") as x:
+      xol = x.read()
+      lex = lexer.Lexer(xol)
+      tk = lex.tokenize()  
+      self.tokens = tk + self.tokens
     while self.token_index < len(self.tokens):
       ##print(self.token_index)
-      ##print(self.tokens[self.token_index])
+      #print(self.tokens[self.token_index][0])
       token_type = self.tokens[self.token_index][0]        
       token_value = self.tokens[self.token_index][1]
       print(token_value + "Is it")
+
       if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][1] in ["+=", "=", "-="]:
         self.parse_variable_declaration(self.tokens[self.token_index : len(self.tokens)])
       elif token_type == "COMMENT":
@@ -34,6 +42,8 @@ class Parser(object):
         self.parse_if_statement(self.tokens[self.token_index : len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeElse":
         self.parse_else_statement(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "USE_DELCARATION":
+        self.parse_import(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeElseIf":
         self.parse_elif_statement(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "CASE" and token_value == "}":
@@ -69,14 +79,12 @@ class Parser(object):
         self.parse_function_declaration(self.tokens[self.token_index: len(self.tokens)])
       else:
         raise SyntaxError("ERR: Undefined Item: " + token_value)
-
-
     print(self.transpiled_code)
     try:    #This stuff is for later, I feel
       exec(self.transpiled_code)
     except: #For errors that Python will call, not exactly sure about these yet
       raise ValueError("CODE ERROR") 
-
+    return self.transpiled_code
 
   def parse_variable_declaration(self, tkns):
     tokens_checked = 0
@@ -367,13 +375,43 @@ class Parser(object):
     FunctionSingleObj = FunctionSingleObject()
     self.transpiled_code = self.transpiled_code + FunctionSingleObj.transpile(name, pars, self.indents)
     self.token_index = self.token_index + tokens_checked + 1
-      
-      
-
-
-
-    
-    
+  def parse_import(self, tkns):
+    tokens_checked = 0
+    value = "from modules."
+    plc = 3
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]  
+      token_value = tkns[tokens_checked][1]  
+      if token_type == "USE_DECLARATION" and token != 0:
+        break
+      elif token == 1 and token_type == "IDENTIFIER":
+        value = value + token_value
+      elif token == 1 and token_type != "IDNETIFIER":
+        raise ValueError('Invalid Module Import Name: ' + token_value)
+      elif token == 2 and token_type == "PASSON":
+        plc = token + 1
+      elif token == 2 and token_type != "PASSON":
+        raise ValueError("'/' expected")
+      elif token == plc and token_type == "IDENTIFIER":
+        value = value + token_value
+      elif token == plc and token_type == "OPERATOR" and token_value == "*":
+        value = value + " import *"
+        if tkns[tokens_checked + 1][0] != "USE_DELCARATION":
+          raise ValueError("'#' expected after module import")
+        else:
+          break
+      elif token == plc and token_type == "OPERATOR" and token_value != "*":
+       raise ValueError('Invalid Module Import Name: ' + token_value)
+      elif token == plc and token_type != "IDENTIFIER":
+        raise ValueError('Invalid Module Import Name: ' + token_value)
+      elif token == plc + 1 and token_type == "PASSON":
+        plc = token + 1
+      elif token == plc + 1 and token_type != "PASSON":
+        raise ValueError("'/' expected")
+      tokens_checked += 1
+    ImportObj = ImportObject()
+    self.transpiled_code = self.transpiled_code + ImportObj.transpile(value, self.indents)
+    self.token_index = tokens_checked + 1
 
 
       
