@@ -1,56 +1,5 @@
-defFunc add ( x , y ) {
-  answer = x + y;
-  stampLn "The answer is: ";
-  stampLn answer;
-}
-defFunc subtract ( x , y ) {
-  answer = x - y;
-  stampLn "The answer is: ";
-  stampLn answer;
-}
-defFunc multiply ( x , y ) {
-  answer = x * y;
-  stampLn "The answer is: ";
-  stampLn answer;
-}
-defFunc divide ( x , y ) {
-  answer = x / y;
-  stampLn "The answer is: ";
-  stampLn answer;
-}
+use colors;
 
-& Main Code &
-completeWhile True {
-  completeWhile True {
-    choice = captureStr "Select an option:\n a) Add\n b) Subtract\n c) Multiply\n d) Divide\n\n\nType q to quit.";
-    completeIf choice == "a" or decision == "b" or decision == "c" or decision == "d" {
-      quitLoop;
-    }
-    completeElse {
-      stampLn "Invalid Choice " + choice;
-    }
-  }
-  completeIf choice == "q" {
-    quitLoop;
-  }
-  completeElse {
-    num1 = captureFloat "First Number: ";
-    num2 = captureFloat "Second Number: ";
-    completeIf choice == "a" {
-      add ( num1 , num2 );
-    }
-    completeElseIf choice == "b" {
-      subtract ( num1 , num2 );
-    }
-    completeElseIf choice == "c" {
-      multiply ( num1 , num2 );
-    }
-    completeElse {
-      divide ( num1 , num2 );
-    }
+stampLn BOLD_YELLOW + "Puzzle:\n" + reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!") + RESET;
+stampLn BOLD_GREEN + "ANSWER:\n" + reverse(reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!")) + RESET;
 
-  }
-
-}
-
-stampLn "Thanks for checking out our function based calculator!!!";
