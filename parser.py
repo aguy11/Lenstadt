@@ -1,4 +1,4 @@
-import lexer
+import lexer, os, parseIndividual
 from objects.varObject import VarObject
 from objects.printObject import PrintObject
 from objects.ifObject import IfObject
@@ -9,7 +9,6 @@ from objects.forLoopObject import ForLoopObject
 from objects.functionObject import FunctionObject
 from objects.giveObject import GiveObject
 from objects.functionSingleObject import FunctionSingleObject 
-from objects.importObject import ImportObject
 
 
 class Parser(object):
@@ -22,9 +21,9 @@ class Parser(object):
   def parse(self):
     with open("modules/mod.stadt") as x:
       xol = x.read()
-      lex = lexer.Lexer(xol)
-      tk = lex.tokenize()  
-      self.tokens = tk + self.tokens
+    lex = lexer.Lexer(xol)
+    tok = lex.tokenize()
+    self.tokens = tok + self.tokens
     while self.token_index < len(self.tokens):
       ##print(self.token_index)
       #print(self.tokens[self.token_index][0])
@@ -42,12 +41,12 @@ class Parser(object):
         self.parse_if_statement(self.tokens[self.token_index : len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeElse":
         self.parse_else_statement(self.tokens[self.token_index: len(self.tokens)])
-      elif token_type == "USE_DELCARATION":
-        self.parse_import(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeElseIf":
         self.parse_elif_statement(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "CASE" and token_value == "}":
         self.indents -= 1
+        self.token_index += 1
+      elif token_type == "CASE" and token_value == "{":
         self.token_index += 1
       elif token_type == "IDENTIFIER" and token_value == "completeWhile":
         self.parse_while_loop(self.tokens[self.token_index: len(self.tokens)])
@@ -77,7 +76,10 @@ class Parser(object):
         self.parse_give(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "defFunc":
         self.parse_function_declaration(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "use":
+        self.parse_import(self.tokens[self.token_index: len(self.tokens)])
       else:
+        print(self.token_index)
         raise SyntaxError("ERR: Undefined Item: " + token_value)
     print(self.transpiled_code)
     try:    #This stuff is for later, I feel
@@ -287,11 +289,7 @@ class Parser(object):
       elif token == 2 and token_value != "(":
         raise ValueError("'(' expected.")
       elif token > 3 and token_value == ")":
-        if tkns[tokens_checked + 1][1] == "{":
-          tokens_checked += 1
-          break
-        else:
-          raise ValueError("'{' expected after function declaration")
+        pass
       elif token == 3 and token_type == "IDENTIFIER":
         params.append(token_value)
         place = token + 1
@@ -310,6 +308,7 @@ class Parser(object):
     FunctionObj = FunctionObject()
     self.transpiled_code = self.transpiled_code + FunctionObj.transpile(name, params, self.indents)
     self.token_index += tokens_checked + 1
+    print(name, tokens_checked, self.tokens[self.token_index])
     self.indents += 1
     self.funcs.append(name)
   def parse_give(self, tkns):
@@ -331,7 +330,7 @@ class Parser(object):
       tokens_checked += 1
     GiveObj = GiveObject()
     self.transpiled_code = self.transpiled_code + GiveObj.transpile(value, self.indents)
-    self.token_index += tokens_checked + 1
+    self.token_index = self.token_index + tokens_checked + 1
   def parse_function(self, tkns, nm):
     tokens_checked = 0
     name = nm
@@ -377,41 +376,32 @@ class Parser(object):
     self.token_index = self.token_index + tokens_checked + 1
   def parse_import(self, tkns):
     tokens_checked = 0
-    value = "from modules."
-    plc = 3
+    module = "modules/"
+    mod2 = ""
     for token in range(len(tkns)):
       token_type = tkns[tokens_checked][0]  
       token_value = tkns[tokens_checked][1]  
-      if token_type == "USE_DECLARATION" and token != 0:
+      if token == 1 and token_type == "IDENTIFIER":
+        module = module + token_value + ".stadt"
+        mod2 = token_value
+      elif token == 1 and token_type != "IDENTIFIER":
+        raise ValueError("Invalid Module Name")
+      elif token == 2 and token_type == "STATEMENT_END":
+        #tokens_checked += 1
         break
-      elif token == 1 and token_type == "IDENTIFIER":
-        value = value + token_value
-      elif token == 1 and token_type != "IDNETIFIER":
-        raise ValueError('Invalid Module Import Name: ' + token_value)
-      elif token == 2 and token_type == "PASSON":
-        plc = token + 1
-      elif token == 2 and token_type != "PASSON":
-        raise ValueError("'/' expected")
-      elif token == plc and token_type == "IDENTIFIER":
-        value = value + token_value
-      elif token == plc and token_type == "OPERATOR" and token_value == "*":
-        value = value + " import *"
-        if tkns[tokens_checked + 1][0] != "USE_DELCARATION":
-          raise ValueError("'#' expected after module import")
-        else:
-          break
-      elif token == plc and token_type == "OPERATOR" and token_value != "*":
-       raise ValueError('Invalid Module Import Name: ' + token_value)
-      elif token == plc and token_type != "IDENTIFIER":
-        raise ValueError('Invalid Module Import Name: ' + token_value)
-      elif token == plc + 1 and token_type == "PASSON":
-        plc = token + 1
-      elif token == plc + 1 and token_type != "PASSON":
-        raise ValueError("'/' expected")
+      elif token == 2 and token_type != "STATEMENT_END":
+        raise ValueError("Semicolon (;), expected")
       tokens_checked += 1
-    ImportObj = ImportObject()
-    self.transpiled_code = self.transpiled_code + ImportObj.transpile(value, self.indents)
-    self.token_index = tokens_checked + 1
+
+    if not os.path.exists(module):
+      raise ImportError("Cannot Use " + mod2)
+    else:
+      IndividualPrsr = parseIndividual.IndividualParser(module)
+      self.transpiled_code = IndividualPrsr.add_code() + self.transpiled_code
+      self.token_index += tokens_checked + 1
+
+    
+
 
 
       
