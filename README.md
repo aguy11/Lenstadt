@@ -194,14 +194,23 @@ List of Functions:
 The names might sound familiar...
 
 STRING()
+
 Basically converts the given value to a string
+
 INTEGER()
+
 Does the same thing as a string, but converts the value into a whole number
+
 FLOAT()
+
 Same as integer, but only it returns a floating number
+
 BOOL()
+
 This is getting obvious, converts the given value to a Boolean
+
 REVERSE()
+
 The most interesting function: Returns a reversed version of a given string!
 
 ### Non-Built-In Packages
