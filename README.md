@@ -194,22 +194,54 @@ List of Functions:
 The names might sound familiar...
 
 STRING()
-
 Basically converts the given value to a string
-
 INTEGER()
-
 Does the same thing as a string, but converts the value into a whole number
-
 FLOAT()
-
 Same as integer, but only it returns a floating number
-
 BOOL()
-
 This is getting obvious, converts the given value to a Boolean
-
 REVERSE()
-
 The most interesting function: Returns a reversed version of a given string!
 
+### Non-Built-In Packages
+
+Hooray, these are here too! ~~Why did I say `these` when there is only one??~~ There are now packages that you can install manually.
+
+> Warning: The packages install as a whole, so you can't reference them like you can do in Python with something like `random.randint()`, you have to do `randint()`. This is effecient, and not efficient.
+
+So what are the packages?
+
+List of packages that I want in my language at the release of V1:
+
+- [x] Color Package
+- [ ] Might: Random Package
+- [ ] A timing package, like `time` in Python
+- [ ] A small system package, like `os` or `sys` in Python
+
+That's it!
+
+#### How to Use
+
+Just type: `use <package name>;` and it's complete!
+Example: `use colors;`
+
+#### Colors
+
+A small color guidebook, so you don't have to type the colors yourself.
+
+This guidebook uses a few simple colors and a BOLD_ prefix if you want the color to be bold.
+
+List of colors:
+- Black
+- Red
+- Green
+- Yellow
+- Blue
+- Magenta
+- Cyan
+- White
+
+These use ANSI codes, so make sure your shell supports them.
+
+Type the color code in capitals, like `BLUE` and you should be good!
