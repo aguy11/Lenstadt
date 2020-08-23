@@ -81,13 +81,72 @@ class Parser(object):
       else:
         print(self.token_index)
         raise SyntaxError("ERR: Undefined Item: " + token_value)
-    print(self.transpiled_code)
-    try:    #This stuff is for later, I feel
-      exec(self.transpiled_code)
-    except: #For errors that Python will call, not exactly sure about these yet
-      raise ValueError("CODE ERROR") 
+    self.transpiled_code = "import time, random, math\n" + self.transpiled_code
+    print("\n\n" + self.transpiled_code)
+    with open("code.py", "w") as iju:
+      iju.write(self.transpiled_code)
+      iju.close()
     return self.transpiled_code
+  def parse_extra(self):
+    while self.token_index < len(self.tokens):
+      ##print(self.token_index)
+      #print(self.tokens[self.token_index][0])
+      token_type = self.tokens[self.token_index][0]        
+      token_value = self.tokens[self.token_index][1]
+      print(token_value + "Is it")
 
+      if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][1] in ["+=", "=", "-="]:
+        self.parse_variable_declaration(self.tokens[self.token_index : len(self.tokens)])
+      elif token_type == "COMMENT":
+        self.token_index += 1
+      elif token_type == "IDENTIFIER" and token_value == "stampLn":
+        self.parse_stamp_ln(self.tokens[self.token_index : len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "completeIf":
+        self.parse_if_statement(self.tokens[self.token_index : len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "completeElse":
+        self.parse_else_statement(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "completeElseIf":
+        self.parse_elif_statement(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "CASE" and token_value == "}":
+        self.indents -= 1
+        self.token_index += 1
+      elif token_type == "CASE" and token_value == "{":
+        self.token_index += 1
+      elif token_type == "IDENTIFIER" and token_value == "completeWhile":
+        self.parse_while_loop(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value in self.funcs:
+        self.parse_function(self.tokens[self.token_index: len(self.tokens)], token_value)
+      elif token_type == "IDENTIFIER" and token_value == "quitLoop":
+        if self.tokens[self.token_index + 1][1] == ";":
+          exec_code = "break"
+          for i in range(self.indents):
+            exec_code = "\t" + exec_code
+          self.transpiled_code = self.transpiled_code + f"{exec_code}\n"
+          self.token_index += 2
+        else:
+          raise ValueError("';' expected after quitLoop statement")
+      elif token_type == "IDENTIFIER" and token_value == "advance":
+        if self.tokens[self.token_index + 1][1] == ";":
+          exec_code = "pass"
+          for i in range(self.indents):
+            exec_code = "\t" + exec_code
+          self.transpiled_code = self.transpiled_code + f"{exec_code}\n"
+          self.token_index += 2
+        else:
+          raise ValueError("';' expected after advance statement")
+      elif token_type == "IDENTIFIER" and token_value == "loop":
+        self.parse_for_loop(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "give":
+        self.parse_give(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "defFunc":
+        self.parse_function_declaration(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "use":
+        self.parse_import(self.tokens[self.token_index: len(self.tokens)])
+      else:
+        print(self.token_index)
+        raise SyntaxError("ERR: Undefined Item: " + token_value)
+    return self.transpiled_code
+ 
   def parse_variable_declaration(self, tkns):
     tokens_checked = 0
     name = ''
@@ -267,7 +326,6 @@ class Parser(object):
     self.transpiled_code = self.transpiled_code + ForLoopObj.transpile(temp_var, fro, to, self.indents)
     self.token_index += tokens_checked + 1
     self.indents += 1
-  
   def parse_function_declaration(self, tkns):
     tokens_checked = 0
     name = ''
@@ -293,7 +351,9 @@ class Parser(object):
       elif token == 3 and token_type == "IDENTIFIER":
         params.append(token_value)
         place = token + 1
-      elif token == 3 and token_type != "IDENTIFIER":
+      elif token == 3 and token_type == "CASE" and token_value == ")":
+        pass
+      elif token == 3 and token_type !=  "IDENTIFIER":
         raise ValueError("Invalid Parameter Name")
       elif token == place and place != 0 and token_type == "SEPERATOR":
         pass
@@ -397,10 +457,13 @@ class Parser(object):
       raise ImportError("Cannot Use " + mod2)
     else:
       IndividualPrsr = parseIndividual.IndividualParser(module)
-      self.transpiled_code = IndividualPrsr.add_code() + self.transpiled_code
+      modulework = IndividualPrsr.add_code()
+      self.transpiled_code = modulework[0] + self.transpiled_code
+      self.funcs += modulework[1]
       self.token_index += tokens_checked + 1
 
     
+
 
 
 
