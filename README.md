@@ -57,7 +57,7 @@ food = captureStr "What is your favorite food? ";
 & Integers &
 age = captureInt "What is your age?";
 & Floats &
-weight = captureFloar "How much do you weigh?? ";
+weight = captureFloat "How much do you weigh?? ";
 & Boolean Values &
 covid19 = captureBool "Do you have the Coronavirus?? [True/False]";
 ```
@@ -224,9 +224,9 @@ So what are the packages?
 List of packages that I want in my language at the release of V1:
 
 - [x] Color Package
-- [ ] Might: Random Package
-- [ ] A timing package, like `time` in Python
-- [ ] A small system package, like `os` or `sys` in Python
+- [x] Random Package
+- [x] A timing package, like `time` in Python
+- [x] A math package, like `math` in Python
 
 That's it!
 
@@ -234,6 +234,8 @@ That's it!
 
 Just type: `use <package name>;` and it's complete!
 Example: `use colors;`
+
+> Note: This is very minimal and I will upgrade it if I have time 
 
 #### Colors
 
@@ -254,3 +256,38 @@ List of colors:
 These use ANSI codes, so make sure your shell supports them.
 
 Type the color code in capitals, like `BLUE` and you should be good!
+
+#### Random
+
+Second GuideBook!
+
+The keyword is `random`, if you plan to import the package.
+
+Functions:
+- randomint( start , end ) - chooses a random number from `start` to `end`
+- randFloat( start , end ) - same as randomint only with floating numbers
+- randomDec() - returns a random decimal value from 0 to 1
+- selectRandom ( item ) - Selects a random letter from a string.
+
+#### Time Package
+
+Third GuideBook!
+
+The keyword is `clocktime` this time!
+
+Functions:
+- delay ( seconds ) - delays the program for a given amount of time
+- getTime () - returns time since epoch
+- toDayTime ( epoch ) - this one takes an epoch number and turns it into a date, like `Sun Aug 23 15:20:49 2020`
+- zone () - Gives you your time zone
+
+#### Last, but not least, the math package!
+
+The keyword is `mathematics`!
+
+Functions:
+- sqRoot ( value ) - returns the square root of a given value.
+- leftOver ( num1 , num2 ) - returns the remainder of `num1` ÷ `num2`
+- exponent ( number , exp ) - returns `number` to the power of `exp`
+
+
