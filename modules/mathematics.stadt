@@ -1,0 +1,9 @@
+defFunc sqRoot ( value ) {
+  give math.sqrt(value);
+}
+defFunc leftOver ( num1 , num2 ) {
+  give math.remainder(num1,num2);
+}
+defFunc exponent ( number , exp ) {
+  give number ** exp;
+}
