@@ -34,7 +34,10 @@ class Lexer(object):
       elif word == ");":
         tokens.append(["CASE", ")"])
         tokens.append(["STATEMENT_END", ";"])
-
+      elif word == "/":
+        tokens.append(["PASSON", "/"])
+      elif word == "#":
+        tokens.append(['USE_DELCARATION', "#"])
 
       elif word in ["captureStr", "captureInt", "captureBool", "captureFloat"]:
         if word == "captureStr":
@@ -67,7 +70,7 @@ class Lexer(object):
         tokens.append(["STATEMENT_END", ";"])
         source_index += (nums - 1)
       
-      elif word in ['==', "/", "+=", "-=", "-", "+", "*", "<", ">", "<=", ">=", "!=", "or", "and", "in", "not", "="]:
+      elif word in ['==', "/", "+=", "-=", "-", "+", "*", "<", ">", "<=", ">=", "!=", "or", "and", "in", "not", "=", "**"]:
         tokens.append(["OPERATOR", word])
       elif word in ['True', 'False'] or word[ : -1] in ['True', 'False']:
         if word[-1] == ";":
@@ -122,3 +125,4 @@ class Lexer(object):
       source_index += 1
     print(tokens)
     return tokens
+
