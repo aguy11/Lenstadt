@@ -8,3 +8,6 @@ lex = Lexer(fr)
 tokens = lex.tokenize()
 parse = Parser(tokens)
 parse.parse()
+with open("code.py", "r") as cd:
+  code = cd.read()
+exec(code)
