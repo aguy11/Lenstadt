@@ -1,5 +1,24 @@
 use colors;
-
+use clocktime;
+use random;
+use mathematics;
 stampLn BOLD_YELLOW + "Puzzle:\n" + reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!") + RESET;
 stampLn BOLD_GREEN + "ANSWER:\n" + reverse(reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!")) + RESET;
+delay ( 3 );
 
+stampLn "Thats it folks"; 
+stampLn "The time is: {toDayTime(getTime())}";
+delay ( 5 );
+stampLn "Oooh! Random number: {randomDec()}";
+delay ( 1 );
+completeWhile True {
+  chooseyrstr = captureStr "Select a random string: ";
+  completeIf length(chooseyrstr) <= 1 {
+    stampLn "Length of selection must be bigger than 1";
+  }
+  completeElse {
+    quitLoop;
+  }
+}
+stampLn "Your random choice from the string was: {selectRandom(chooseyrstr)}";
+stampLn "500^453 = {exponent(500,453)}";
