@@ -1,24 +1,35 @@
-use colors;
-use clocktime;
-use random;
-use mathematics;
-stampLn BOLD_YELLOW + "Puzzle:\n" + reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!") + RESET;
-stampLn BOLD_GREEN + "ANSWER:\n" + reverse(reverse("Once upon a time, a wise man said: You miss 100% of the shots you never take Can you guess who this wise man was? If you guessed Micheal Jordan, you are correct!")) + RESET;
-delay ( 3 );
+& Random Fibbonacci Sequence! &
 
-stampLn "Thats it folks"; 
-stampLn "The time is: {toDayTime(getTime())}";
-delay ( 5 );
-stampLn "Oooh! Random number: {randomDec()}";
-delay ( 1 );
+use random;
+
+defFunc fib ( amount ) {
+  fib1 = 0;
+  fib2 = 1;
+  loop i from 1 to amount {
+    fibsaver = fib1;
+    fib1 = fib2;
+    fib2 = fib2 + fibsaver;
+  } 
+  give fib2;
+}
+
 completeWhile True {
-  chooseyrstr = captureStr "Select a random string: ";
-  completeIf length(chooseyrstr) <= 1 {
-    stampLn "Length of selection must be bigger than 1";
+  looping_time = captureInt "How many times to find fibbonacci number?";
+  completeIf looping_time <= 2 {
+    stampLn "Must Choose 3 or more!";
+  }
+  completeElseIf looping_time >= 1000 {
+    stampLn "The number cannot be above 1000. Try again.";
   }
   completeElse {
     quitLoop;
   }
 }
-stampLn "Your random choice from the string was: {selectRandom(chooseyrstr)}";
-stampLn "500^453 = {exponent(500,453)}";
+num = 1;
+completeWhile num <= looping_time {
+  amount_to_do = randomint(5,20);
+  finished_fib = fib(amount_to_do);
+  stampLn "{finished_fib} is number {amount_to_do} in the fibbonacci sequence.";
+  num += 1;
+}
+
