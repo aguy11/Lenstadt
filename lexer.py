@@ -10,7 +10,7 @@ class Lexer(object):
     source_index = 0
     while source_index < len(source):
       word = source[source_index]
-      print(word)
+      #print(word)
       if word[0] == "&":
         begin = "'''"
         alls = ""
@@ -34,10 +34,15 @@ class Lexer(object):
       elif word == ");":
         tokens.append(["CASE", ")"])
         tokens.append(["STATEMENT_END", ";"])
+      elif word == "()":
+        tokens.append(["CASE", "("])
+        tokens.append(["CASE", ")"])
       elif word == "/":
         tokens.append(["PASSON", "/"])
       elif word == "#":
         tokens.append(['USE_DELCARATION', "#"])
+      elif word == ";":
+        tokens.append(["STATEMENT_END", ";"])
 
       elif word in ["captureStr", "captureInt", "captureBool", "captureFloat"]:
         if word == "captureStr":
@@ -80,7 +85,7 @@ class Lexer(object):
           tokens.append(['BOOL', word])
       
       elif re.match("[a-z]", word.lower()):
-        #print("Hey: " + i)
+        ##print("Hey: " + i)
         if word[-1] == ";" and word[0] != '"':
           if len(word) != 2:
             tokens.append(["IDENTIFIER", word[ : -1]])
@@ -109,10 +114,10 @@ class Lexer(object):
           tr = word[0]
           while True:
             source_index += 1
-            ##printsource_index)
+            ###printsource_index)
             word = word + f" {source[source_index]}"
             if word[-1] == tr or word[-2] == tr:
-              #print"DOING IT: " + i)
+              ##print"DOING IT: " + i)
               if word[-1] == ";":
                 tokens.append(["STRING", "f" + word[ : -1]])
                 tokens.append(["STATEMENT_END", ";"])
@@ -123,6 +128,7 @@ class Lexer(object):
               continue
     
       source_index += 1
-    print(tokens)
+    #print(tokens)
     return tokens
+
 
