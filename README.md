@@ -66,11 +66,15 @@ covid19 = captureBool "Do you have the Coronavirus?? [True/False]";
 
 Also very easy.
 
-Structure: `completeIf <case> { &Things to do& }`
+If you want to use an if statement, jut type `completeIf <case> { <contents>; }`
 
-Elif Structure: Just use `completeElseIf` instead of `completeIf`
+(Almost) Same for Elif/Else if:
 
-Else Structure: Use `completeElse` instead of `completeIf`
+`completeElseIf <case> { <contents>; }`
+
+And lastly for else:
+
+`otherwise { <contents>; }`
 
 Example:
 ```
@@ -81,7 +85,7 @@ completeIf name == "Magnus Carlsen" {
 completeElseIf name == "Billy Bob Joe" {
   stampLn "Don't lie, the force tells me it is not.";
 }
-completeElse {
+otherwise {
   stampLn "Welcome!";
 }
 ```
@@ -106,7 +110,7 @@ completeWhile True {
   completeElseIf counter > 16 {
     stampLn "Systematic Error.....";
   }
-  completeElse {
+  otherwise {
     advance;
     counter += 1;
   }
@@ -129,7 +133,7 @@ completeWhile True {
   completeElseIf times < 1 {
     stampLn "You need to have at least one time!!!";
   }
-  completeElse {
+  otherwise {
     quitLoop;
   }
 }
@@ -290,4 +294,15 @@ Functions:
 - leftOver ( num1 , num2 ) - returns the remainder of `num1` ÷ `num2`
 - exponent ( number , exp ) - returns `number` to the power of `exp`
 
+### Reading Files
+
+Lenstadt has this too.
+
+All you have to do is:
+
+```
+readFile "PUTYOURFILEPATHHERE" as VARIABLENAME;
+```
+
+And the contents of that file will be stored in a variable.
 
