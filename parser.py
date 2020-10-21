@@ -174,6 +174,8 @@ class Parser(object):
         raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
       tokens_checked += 1
     ##print(name, operator, value)
+    if name == "lenstadt":
+      raise ValueError("Variable Cannot Be Named 'lenstadt'")
     VarObj = VarObject()
     self.transpiled_code = self.transpiled_code + VarObj.transpile(name, operator, value, self.indents)
     self.token_index += tokens_checked + 1
@@ -494,5 +496,3 @@ class Parser(object):
     self.token_index += tokens_checked + 1
   
 
-
-      
