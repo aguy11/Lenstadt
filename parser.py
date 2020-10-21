@@ -9,6 +9,7 @@ from objects.forLoopObject import ForLoopObject
 from objects.functionObject import FunctionObject
 from objects.giveObject import GiveObject
 from objects.functionSingleObject import FunctionSingleObject 
+from objects.readFileObject import ReadFileObject
 
 
 class Parser(object):
@@ -19,17 +20,13 @@ class Parser(object):
     self.indents = 0
     self.funcs = []
   def parse(self):
-    with open("modules/mod.stadt") as x:
-      xol = x.read()
-    lex = lexer.Lexer(xol)
-    tok = lex.tokenize()
-    self.tokens = tok + self.tokens
+    
     while self.token_index < len(self.tokens):
-      ##print(self.token_index)
-      #print(self.tokens[self.token_index][0])
+      ###print(self.token_index)
+      ##print(self.tokens[self.token_index][0])
       token_type = self.tokens[self.token_index][0]        
       token_value = self.tokens[self.token_index][1]
-      print(token_value + "Is it")
+      #print(token_value + "Is it")
 
       if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][1] in ["+=", "=", "-="]:
         self.parse_variable_declaration(self.tokens[self.token_index : len(self.tokens)])
@@ -39,7 +36,7 @@ class Parser(object):
         self.parse_stamp_ln(self.tokens[self.token_index : len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeIf":
         self.parse_if_statement(self.tokens[self.token_index : len(self.tokens)])
-      elif token_type == "IDENTIFIER" and token_value == "completeElse":
+      elif token_type == "IDENTIFIER" and token_value == "otherwise":
         self.parse_else_statement(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "completeElseIf":
         self.parse_elif_statement(self.tokens[self.token_index: len(self.tokens)])
@@ -78,22 +75,24 @@ class Parser(object):
         self.parse_function_declaration(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "use":
         self.parse_import(self.tokens[self.token_index: len(self.tokens)])
+      elif token_type == "IDENTIFIER" and token_value == "readFile":
+        self.parseReadFile(self.tokens[self.token_index: -1])
       else:
-        print(self.token_index)
+        #print(self.token_index)
         raise SyntaxError("ERR: Undefined Item: " + token_value)
     self.transpiled_code = "import time, random, math\n" + self.transpiled_code
-    print("\n\n" + self.transpiled_code)
+    #print("\n\n" + self.transpiled_code)
     with open("code.py", "w") as iju:
       iju.write(self.transpiled_code)
       iju.close()
     return self.transpiled_code
   def parse_extra(self):
     while self.token_index < len(self.tokens):
-      ##print(self.token_index)
-      #print(self.tokens[self.token_index][0])
+      ###print(self.token_index)
+      ##print(self.tokens[self.token_index][0])
       token_type = self.tokens[self.token_index][0]        
       token_value = self.tokens[self.token_index][1]
-      print(token_value + "Is it")
+      #print(token_value + "Is it")
 
       if token_type == "IDENTIFIER" and self.tokens[self.token_index + 1][1] in ["+=", "=", "-="]:
         self.parse_variable_declaration(self.tokens[self.token_index : len(self.tokens)])
@@ -143,7 +142,7 @@ class Parser(object):
       elif token_type == "IDENTIFIER" and token_value == "use":
         self.parse_import(self.tokens[self.token_index: len(self.tokens)])
       else:
-        print(self.token_index)
+        #print(self.token_index)
         raise SyntaxError("ERR: Undefined Item: " + token_value)
     return self.transpiled_code
  
@@ -174,7 +173,7 @@ class Parser(object):
       elif token >= 3 and token_type not in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR"]:
         raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
       tokens_checked += 1
-    #print(name, operator, value)
+    ##print(name, operator, value)
     VarObj = VarObject()
     self.transpiled_code = self.transpiled_code + VarObj.transpile(name, operator, value, self.indents)
     self.token_index += tokens_checked + 1
@@ -287,7 +286,7 @@ class Parser(object):
     for token in range(len(tkns)):
       token_type = tkns[tokens_checked][0]
       token_value = tkns[tokens_checked][1]
-      print(token == place_holder and token_type in ['IDENTIFIER', 'INTEGER'])
+      #print(token == place_holder and token_type in ['IDENTIFIER', 'INTEGER'])
       if token == 0:
         pass
       elif token_type == "CASE" and token_value == "{":
@@ -308,11 +307,11 @@ class Parser(object):
         fro = fro + " " + token_value
       elif token > 3 and token_value == "to":
         place_holder = token + 1
-        print("Hahahaha " + str(place_holder))
+        #print("Hahahaha " + str(place_holder))
       elif token > 3 and token_type not in ['INTEGER', 'IDENTIFIER', 'OPERATOR']:
         raise ValueError('Invalid From Value in Loop')
       elif token == place_holder and token_type in ['IDENTIFIER', 'INTEGER']:
-        print("Bob")
+        #print("Bob")
         to = to + token_value
       elif token == place_holder and token_type not in ['IDENTIFIER', 'INTEGER']:
         raise ValueError("Invalid to Value in Loop")
@@ -321,7 +320,7 @@ class Parser(object):
       elif token > place_holder and token_type not in ['INTEGER', 'IDENTIFIER', 'OPERATOR']:
         raise ValueError('Invalid To Value in Loop')
       tokens_checked += 1
-    print("Hey you ",  fro, to)
+    #print("Hey you ",  fro, to)
     ForLoopObj = ForLoopObject()
     self.transpiled_code = self.transpiled_code + ForLoopObj.transpile(temp_var, fro, to, self.indents)
     self.token_index += tokens_checked + 1
@@ -368,7 +367,7 @@ class Parser(object):
     FunctionObj = FunctionObject()
     self.transpiled_code = self.transpiled_code + FunctionObj.transpile(name, params, self.indents)
     self.token_index += tokens_checked + 1
-    print(name, tokens_checked, self.tokens[self.token_index])
+    #print(name, tokens_checked, self.tokens[self.token_index])
     self.indents += 1
     self.funcs.append(name)
   def parse_give(self, tkns):
@@ -400,14 +399,14 @@ class Parser(object):
     for token in range(len(tkns)):
       token_type = tkns[tokens_checked][0]  
       token_value = tkns[tokens_checked][1]  
-      print(token_type)
+      #print(token_type)
       if token == 1 and token_type == "CASE" and token_value == "(":
         pass
       elif token == 1 and token_type != "CASE":
-        print("mhuah")
+        #print("mhuah")
         raise ValueError("'(' expected")
       elif token == 1 and token_value != "(":
-        print("mhua")
+        #print("mhua")
         raise ValueError("'(' expected")
       elif token >= 3 and token_value == ")":
         if tkns[tokens_checked + 1][0] == "STATEMENT_END":
@@ -461,10 +460,39 @@ class Parser(object):
       self.transpiled_code = modulework[0] + self.transpiled_code
       self.funcs += modulework[1]
       self.token_index += tokens_checked + 1
+  def parseReadFile(self, tkns):
+    tokens_checked = 0
+    filepath = ""  
+    asread = False
+    asread_token = 0
+    varname = ""
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]  
+      token_value = tkns[tokens_checked][1]
+      if token == 1 and token_type in ["STRING", "IDENTIFIER"] and not asread:
+        filepath = token_value
+      elif token_type == "STATEMENT_END":
+        break
+      elif token == 1 and token_type not in ["STRING", "IDENTIFIER"] and not asread:
+        raise ValueError("Invalid File Path to ReadFile")
+      elif token >= 2 and token_value == "as":
+        asread = True
+        asread_token = token
+      elif token >= 2 and token_type in ['IDENTIFIER', "STRING", "OPERATOR"] and not asread:
+        filepath += " " + token_value
+      elif token >= 2 and token_type not in ['IDENTIFIER', "STRING", "OPERATOR"] and not asread:
+        raise ValueError("Invalid FilePath in ReadFile")
+      elif token == asread_token + 1 and token_type in ['IDENTIFIER'] and asread:
+        varname = token_value
+      elif token == asread_token + 1 and token_type not in ['IDENTIFIER'] and asread:
+        raise ValueError("Invalid Variable name in readFile")
+        
+      tokens_checked += 1
 
-    
-
-
+    ReadFileObj = ReadFileObject()
+    self.transpiled_code += ReadFileObj.transpile(self.indents, varname, filepath)
+    self.token_index += tokens_checked + 1
+  
 
 
       
