@@ -219,9 +219,9 @@ The most interesting function: Returns a reversed version of a given string!
 
 ### Non-Built-In Packages
 
-Hooray, these are here too! ~~Why did I say `these` when there is only one??~~ There are now packages that you can install manually.
+Hooray, these are here too! There are now packages that you can install manually.
 
-> Warning: The packages install as a whole, so you can't reference them like you can do in Python with something like `random.randint()`, you have to do `randint()`. This is effecient, and not efficient.
+> Warning: The packages install partially, so you have to use the following syntax to call functions and variables inside of the package: `<PACKAGENAMEHERE>.<FUNCTIONNAMEHERE>`
 
 So what are the packages?
 
@@ -315,3 +315,5 @@ writeFile "FILEPATH" as CONTENT;
 ```
 
 And the file's content will be replaced with the CONTENT.
+
+
