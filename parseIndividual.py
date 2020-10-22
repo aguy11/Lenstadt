@@ -11,6 +11,20 @@ class IndividualParser(object):
     toki = lexe.tokenize()
     par = parser.Parser(toki)
     cod = par.parse_extra()
-    
-    return cod, par.funcs
+    nm = self.path[8: -6]
+    line1 = f"class {nm.upper()}:\n"
+    lastln = f"{nm} = {nm.upper()}\n"
+    lns = cod.split("\n")
+    loins = []
+    for i in lns:
+      loins.append("\t" + i)
+    loins = loins[:-1]
+    loins.append("\n")
+    sep = "\n"
+    lins = sep.join(loins)
+    lins = line1 + lins + lastln
+    funcs = []
+    for x in par.funcs:
+      funcs.append(f"{nm}.{x}")
+    return lins, funcs
 
