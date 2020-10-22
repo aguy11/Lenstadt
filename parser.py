@@ -403,7 +403,7 @@ class Parser(object):
     for token in range(len(tkns)):
       token_type = tkns[tokens_checked][0]  
       token_value = tkns[tokens_checked][1]  
-      #print(token_type)
+      print(token)
       if token == 1 and token_type == "CASE" and token_value == "(":
         pass
       elif token == 1 and token_type != "CASE":
@@ -412,7 +412,7 @@ class Parser(object):
       elif token == 1 and token_value != "(":
         #print("mhua")
         raise ValueError("'(' expected")
-      elif token >= 3 and token_value == ")":
+      elif token >= 2 and token_value == ")":
         if tkns[tokens_checked + 1][0] == "STATEMENT_END":
           pars.append(current_par)
           tokens_checked += 1
@@ -533,5 +533,3 @@ class Parser(object):
     self.transpiled_code += WriteFileObj.transpile(self.indents, filepath, text)
     self.token_index += tokens_checked + 1
   
-
-
