@@ -10,7 +10,7 @@ from objects.functionObject import FunctionObject
 from objects.giveObject import GiveObject
 from objects.functionSingleObject import FunctionSingleObject 
 from objects.readFileObject import ReadFileObject
-
+from objects.writeFileObject import WriteFileObject
 
 class Parser(object):
   def __init__(self, tokens):
@@ -77,6 +77,8 @@ class Parser(object):
         self.parse_import(self.tokens[self.token_index: len(self.tokens)])
       elif token_type == "IDENTIFIER" and token_value == "readFile":
         self.parseReadFile(self.tokens[self.token_index: -1])
+      elif token_type == "IDENTIFIER" and token_value == "writeFile":
+        self.parseWriteFile(self.tokens[self.token_index: -1])
       else:
         #print(self.token_index)
         raise SyntaxError("ERR: Undefined Item: " + token_value)
@@ -494,5 +496,42 @@ class Parser(object):
     ReadFileObj = ReadFileObject()
     self.transpiled_code += ReadFileObj.transpile(self.indents, varname, filepath)
     self.token_index += tokens_checked + 1
+  def parseWriteFile(self, tkns):
+    tokens_checked = 0
+    filepath = ""  
+    asread = False
+    asread_token = 0
+    text = ""
+    for token in range(len(tkns)):
+      token_type = tkns[tokens_checked][0]  
+      token_value = tkns[tokens_checked][1]
+      if token == 1 and token_type in ["STRING", "IDENTIFIER"] and not asread:
+        filepath = token_value
+      elif token_type == "STATEMENT_END":
+        break
+      elif token == 1 and token_type not in ["STRING", "IDENTIFIER"] and not asread:
+        raise ValueError("Invalid File Path to WriteFile")
+      elif token >= 2 and token_value == "as":
+        asread = True
+        asread_token = token
+      elif token >= 2 and token_type in ['IDENTIFIER', "STRING", "OPERATOR"] and not asread:
+        filepath += " " + token_value
+      elif token >= 2 and token_type not in ['IDENTIFIER', "STRING", "OPERATOR"] and not asread:
+        raise ValueError("Invalid FilePath in ReadFile")
+      elif token == asread_token + 1 and token_type in ['IDENTIFIER', 'STRING'] and asread:
+        text = token_value
+      elif token == asread_token + 1 and token_type not in ['IDENTIFIER', 'STRING'] and asread:
+        raise ValueError("Invalid Text value in writeFile")
+      elif token >= asread_token + 1 and token_type in ['IDENTIFIER', 'STRING'] and asread:
+        text += " " + token_value
+      elif token >= asread_token + 1 and token_type not in ['IDENTIFIER', 'STRING'] and asread:
+        raise ValueError("Invalid Text value in writeFile")
+        
+      tokens_checked += 1
+
+    WriteFileObj = WriteFileObject()
+    self.transpiled_code += WriteFileObj.transpile(self.indents, filepath, text)
+    self.token_index += tokens_checked + 1
   
+
 
