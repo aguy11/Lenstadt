@@ -166,13 +166,13 @@ class Parser(object):
         operator = token_value
       elif token == 1 and token_type != "OPERATOR":
         raise ValueError("ERR: Invalid Variable Operator " + token_value)
-      elif token == 2 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING"]:
+      elif token == 2 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "CASE"]:
         value = token_value
-      elif token == 2 and token_type not in ['IDENTIFIER','INTEGER', "BOOL", "STRING"]:
+      elif token == 2 and token_type not in ['IDENTIFIER','INTEGER', "BOOL", "STRING", "CASE"]:
         raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
-      elif token >= 3 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR"]:
+      elif token >= 3 and token_type in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR", "CASE"]:
         value = value + " " + token_value
-      elif token >= 3 and token_type not in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR"]:
+      elif token >= 3 and token_type not in ['IDENTIFIER', 'INTEGER', "BOOL", "STRING", "OPERATOR", "CASe"]:
         raise ValueError("ERR: Inavlid Variable Value " + token_value + " in " + name)
       tokens_checked += 1
     ##print(name, operator, value)
@@ -403,7 +403,7 @@ class Parser(object):
     for token in range(len(tkns)):
       token_type = tkns[tokens_checked][0]  
       token_value = tkns[tokens_checked][1]  
-      print(token)
+      #print(token)
       if token == 1 and token_type == "CASE" and token_value == "(":
         pass
       elif token == 1 and token_type != "CASE":
