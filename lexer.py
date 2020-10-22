@@ -43,6 +43,26 @@ class Lexer(object):
         tokens.append(['USE_DELCARATION', "#"])
       elif word == ";":
         tokens.append(["STATEMENT_END", ";"])
+      elif word == "(":
+        items = []
+        activ = False
+        for i in source[source_index:]:
+          if i != ")" and i != ");":
+            items.append(word[:-1])
+          else:
+            if i == ")":
+              break
+            else:
+              activ = True
+
+        trtuple = "("
+        for x in items:
+          trtuple += f"{x},"
+        trtuple = trtuple[:-1]
+        trtuple += ")"
+        tokens.append(["IDENTIFIER", trtuple])
+        if activ:
+          tokens.append(['STATEMENT_END', ";"])
 
       elif word in ["captureStr", "captureInt", "captureBool", "captureFloat"]:
         if word == "captureStr":
