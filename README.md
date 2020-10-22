@@ -317,3 +317,15 @@ writeFile "FILEPATH" as CONTENT;
 And the file's content will be replaced with the CONTENT.
 
 
+### More complex data structures
+
+#### Tuples
+
+Tuples are the only type of complex data structure that there is right now, so bear with me. They are also very minimal (there are no tuples allowed inside of tuples) Here is a basic tuple:
+
+```
+tuple = ( "Hello", "This", "Is", "A", "Taco" );
+stampLn tuple;
+```
+
+
