@@ -1,4 +1,17 @@
+use lenrandom;
+
 writeFile "test.txt" as "It is";
 
 readFile "test.txt" as msg;
 stampLn msg;
+
+lenrandom.randomDec ( ) ;
+
+& Simple test to make sure i did not break anything &
+
+defFunc pleaseWork ( paramhere ) {
+  stampLn paramhere;
+}
+
+pleaseWork ( "please work" );
+
