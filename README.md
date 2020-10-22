@@ -306,3 +306,12 @@ readFile "PUTYOURFILEPATHHERE" as VARIABLENAME;
 
 And the contents of that file will be stored in a variable.
 
+### Writing to Files
+
+Also simple:
+
+```
+writeFile "FILEPATH" as CONTENT;
+```
+
+And the file's content will be replaced with the CONTENT.
