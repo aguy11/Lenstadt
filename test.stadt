@@ -1,2 +1,4 @@
+writeFile "test.txt" as "It is";
+
 readFile "test.txt" as msg;
 stampLn msg;
