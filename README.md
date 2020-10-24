@@ -154,11 +154,11 @@ loop time from 1 to times + 1 {
 
 Yes, they're finally here! Functions! There are currently two types, and they're not too flexible, but I'll change that later, I'm focusing on *functionality* not *flexibility*.
 
-Structure: `defFunc <function name> ( param1 , param2 ) {&Things to do& }`
+Structure: `defFunc <function name> <( param1 , param2 )> {&Things to do& }`
 
 Example:
 ```
-defFunc add ( x , y ) {
+defFunc add <( x , y )> {
   answer = x + y;
   stampLn "The answer is: ";
   stampLn answer;
