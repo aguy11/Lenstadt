@@ -25,16 +25,16 @@ class Lexer(object):
         tokens.append(['COMMENT', alls])
       elif word in ['{', '}']:
         tokens.append(["CASE", word])
-      elif word == "(":
+      elif word == "<(":
         tokens.append(["CASE", '('])
       elif word == ",":
         tokens.append(['SEPERATOR', ","])
-      elif word == ")":
+      elif word == ")>":
         tokens.append(["CASE", ")"])
       elif word == ");":
         tokens.append(["CASE", ")"])
         tokens.append(["STATEMENT_END", ";"])
-      elif word == "()":
+      elif word == "<()>":
         tokens.append(["CASE", "("])
         tokens.append(["CASE", ")"])
       elif word == "/":
