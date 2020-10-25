@@ -5,13 +5,21 @@ writeFile "test.txt" as "It is";
 readFile "test.txt" as msg;
 stampLn msg;
 
-lenrandom.randomDec ( ) ;
+lenrandom.randomDec <( )> ;
 
 & Simple test to make sure i did not break anything &
 
-defFunc pleaseWork ( paramhere ) {
+defFunc pleaseWork <( paramhere )> {
   stampLn paramhere;
 }
 
-pleaseWork ( "please work" );
+pleaseWork <( "please work" )>;
+
+
+& Tuples &
+
+
+tuple = ( "Hello", "This", "Is", "A", "Taco", ( "Yes", "It", "Is" ) );
+stampLn tuple[5][2];
+
 
