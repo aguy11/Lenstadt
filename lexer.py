@@ -10,7 +10,7 @@ class Lexer(object):
     source_index = 0
     while source_index < len(source):
       word = source[source_index]
-      #print(word)
+      ##print(word)
       if word[0] == "&":
         begin = "'''"
         alls = ""
@@ -49,16 +49,16 @@ class Lexer(object):
         cases = {"(": ")"}
         tosee = [")"]
         cntr = 0
+        hoe = False
         for i in source[source_index + 1:]:
           cntr += 1
-          print(tosee)
-          print(i)
-          print(i == tosee[0] or i == tosee[0] + ";")
+          #print(tosee)
+          #print(i)
+          #print(i == tosee[0] or i == tosee[0] + ";")
           isit = i in cases
-          print(isit)
-          hoe = False
+          #print(isit)
           if isit:
-            print("Whee")
+            #print("Whee")
             items.append(i)
             hoe = True
             tosee.insert(0, cases[i])
@@ -70,10 +70,14 @@ class Lexer(object):
               else:
                 items.append(i)
             else:
-              items[-1] = items[-1] + i
+              #print("whoopee")
+              old_item = items[-1]
+              del items[-1]
+              items.append(old_item + i)
           elif i == tosee[0] or i == tosee[0] + ";":
-
-            items[-1] = items[-1] + i
+            if i == tosee[0]:
+              items[-1] = items[-1] + i
+            
             del tosee[0]
           else:
             if i == ")":
@@ -133,7 +137,7 @@ class Lexer(object):
           tokens.append(['BOOL', word])
       
       elif re.match("[a-z]", word.lower()):
-        ##print("Hey: " + i)
+        ###print("Hey: " + i)
         if word[-1] == ";" and word[0] != '"':
           if len(word) != 2:
             tokens.append(["IDENTIFIER", word[ : -1]])
@@ -162,10 +166,10 @@ class Lexer(object):
           tr = word[0]
           while True:
             source_index += 1
-            ###printsource_index)
+            ####printsource_index)
             word = word + f" {source[source_index]}"
             if word[-1] == tr or word[-2] == tr:
-              ##print"DOING IT: " + i)
+              ###print"DOING IT: " + i)
               if word[-1] == ";":
                 tokens.append(["STRING", "f" + word[ : -1]])
                 tokens.append(["STATEMENT_END", ";"])
@@ -176,6 +180,6 @@ class Lexer(object):
               continue
     
       source_index += 1
-    #print(tokens)
+    ##print(tokens)
     return tokens
 
