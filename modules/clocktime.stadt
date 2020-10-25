@@ -1,12 +1,12 @@
-defFunc delay ( seconds ) {
+defFunc delay <( seconds )> {
   give time.sleep(seconds);
 }
-defFunc getTime ( ) {
+defFunc getTime <( )> {
   give time.time();
 }
-defFunc toDayTime ( epoch_time ) {
+defFunc toDayTime <( epoch_time )> {
   give time.ctime(epoch_time);
 }
-defFunc zone ( ) {
+defFunc zone <( )> {
   give time.localtime().tm_zone;
 }
