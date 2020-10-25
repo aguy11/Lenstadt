@@ -265,7 +265,7 @@ Type the color code in capitals, like `BLUE` and you should be good!
 
 Second GuideBook!
 
-The keyword is `random`, if you plan to import the package.
+The keyword is `lenrandom`, if you plan to import the package.
 
 Functions:
 - randomint( start , end ) - chooses a random number from `start` to `end`
@@ -321,11 +321,10 @@ And the file's content will be replaced with the CONTENT.
 
 #### Tuples
 
-Tuples are the only type of complex data structure that there is right now, so bear with me. They are also very minimal (there are no tuples allowed inside of tuples) Here is a basic tuple:
+Tuples are the only type of complex data structure that there is right now, so bear with me. Here is a basic tuple:
 
 ```
-tuple = ( "Hello", "This", "Is", "A", "Taco" );
+tuple = ( "Hello", "This", "Is", "A", "Taco", ( "Yes", "It", "Is" ) );
 stampLn tuple;
 ```
-
 
