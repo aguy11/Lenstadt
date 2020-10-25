@@ -50,6 +50,7 @@ class Lexer(object):
         tosee = [")"]
         cntr = 0
         hoe = False
+        tobrk = False
         for i in source[source_index + 1:]:
           cntr += 1
           #print(tosee)
@@ -77,14 +78,13 @@ class Lexer(object):
           elif i == tosee[0] or i == tosee[0] + ";":
             if i == tosee[0]:
               items[-1] = items[-1] + i
-            
-            del tosee[0]
-          else:
-            if i == ")":
-              break
             else:
               activ = True
+              tobrk = True
+            del tosee[0]
+            if tobrk:
               break
+
 
         trtuple = "("
         for x in items:
