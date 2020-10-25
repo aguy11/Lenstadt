@@ -31,7 +31,7 @@ class Lexer(object):
         tokens.append(['SEPERATOR', ","])
       elif word == ")>":
         tokens.append(["CASE", ")"])
-      elif word == ");":
+      elif word == ")>;":
         tokens.append(["CASE", ")"])
         tokens.append(["STATEMENT_END", ";"])
       elif word == "<()>":
@@ -46,14 +46,41 @@ class Lexer(object):
       elif word == "(":
         items = []
         activ = False
-        for i in source[source_index:]:
-          if i != ")" and i != ");":
-            items.append(word[:-1])
+        cases = {"(": ")"}
+        tosee = [")"]
+        cntr = 0
+        for i in source[source_index + 1:]:
+          cntr += 1
+          print(tosee)
+          print(i)
+          print(i == tosee[0] or i == tosee[0] + ";")
+          isit = i in cases
+          print(isit)
+          hoe = False
+          if isit:
+            print("Whee")
+            items.append(i)
+            hoe = True
+            tosee.insert(0, cases[i])
+          elif i != ")" and i != ");" and i != tosee[0] + ";":
+            if not hoe:
+              if i[-1] == ",":
+                
+                items.append(i[:-1])
+              else:
+                items.append(i)
+            else:
+              items[-1] = items[-1] + i
+          elif i == tosee[0] or i == tosee[0] + ";":
+
+            items[-1] = items[-1] + i
+            del tosee[0]
           else:
             if i == ")":
               break
             else:
               activ = True
+              break
 
         trtuple = "("
         for x in items:
@@ -63,6 +90,7 @@ class Lexer(object):
         tokens.append(["IDENTIFIER", trtuple])
         if activ:
           tokens.append(['STATEMENT_END', ";"])
+        source_index += cntr
 
       elif word in ["captureStr", "captureInt", "captureBool", "captureFloat"]:
         if word == "captureStr":
@@ -150,5 +178,4 @@ class Lexer(object):
       source_index += 1
     #print(tokens)
     return tokens
-
 
