@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+
+/*rgba(20, 70, 160, 1);
+rgba(214, 248, 214, 1);*/
+* {
+  font-family: "Inconsolata";
+  background-color: rgba(214, 248, 214, 1);
+}
+
+.ttl {
+  color: rgba(20, 70, 160, 1);
+}
