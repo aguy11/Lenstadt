@@ -17,7 +17,7 @@ Introducing Lenstadt, a still-developing computer language.
 - Functions
 - Built-in library
 - Extra libraries
-- +
+
 
 ## How to set up
 
